@@ -4,6 +4,7 @@ export default function TodoItem({ text }) {
   return (
     <View style={styles.taskItem}>
       <Text style={styles.taskText}>{text}</Text>
+      <Text style={styles.hintText}>(Tap to delete)</Text>
     </View>
   );
 }
@@ -14,13 +15,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 15,
     borderRadius: 8,
-    elevation: 2, 
-    shadowColor: '#000', 
+    elevation: 2,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
   taskText: {
     fontSize: 16,
+    marginBottom: 4,
+  },
+  hintText: {
+    fontSize: 12,
+    color: '#888',
   },
 });

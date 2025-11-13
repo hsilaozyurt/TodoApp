@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   FlatList,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TodoItem from './components/TodoItem';
@@ -19,20 +20,23 @@ export default function App() {
   }
 
   function addTaskHandler() {
-    
     if (enteredTaskText.trim().length === 0) {
       console.log('Empty task, not added');
       return;
     }
 
-    
     setTasks((currentTasks) => [
       ...currentTasks,
       { id: Math.random().toString(), text: enteredTaskText },
     ]);
 
-    
     setEnteredTaskText('');
+  }
+
+  function deleteTaskHandler(id) {
+    setTasks((currentTasks) => {
+      return currentTasks.filter((task) => task.id !== id);
+    });
   }
 
   return (
@@ -56,8 +60,12 @@ export default function App() {
         <View style={styles.listContainer}>
           <FlatList
             data={tasks}
-            renderItem={({ item }) => <TodoItem text={item.text} />}
             keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Pressable onPress={() => deleteTaskHandler(item.id)}>
+                <TodoItem text={item.text} />
+              </Pressable>
+            )}
             ListEmptyComponent={
               <Text style={styles.emptyText}>No tasks yet. Add one!</Text>
             }
@@ -94,7 +102,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   textInput: {
-    flex: 1, 
+    flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
@@ -104,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   listContainer: {
-    flex: 5, 
+    flex: 5,
   },
   emptyText: {
     textAlign: 'center',
