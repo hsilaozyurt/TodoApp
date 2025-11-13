@@ -1,37 +1,68 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  FlatList,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TodoItem from './components/TodoItem';
 
 export default function App() {
-  const [todoText, setTodoText] = useState('');
+  const [enteredTaskText, setEnteredTaskText] = useState('');
+  const [tasks, setTasks] = useState([]);
 
-  const handleAddTodo = () => {
-    if (!todoText.trim()) {
-      console.log('Empty todo, not added.');
+  function taskInputHandler(enteredText) {
+    setEnteredTaskText(enteredText);
+  }
+
+  function addTaskHandler() {
+    
+    if (enteredTaskText.trim().length === 0) {
+      console.log('Empty task, not added');
       return;
     }
 
-    console.log('New todo:', todoText);
-    setTodoText(''); 
-  };
+    
+    setTasks((currentTasks) => [
+      ...currentTasks,
+      { id: Math.random().toString(), text: enteredTaskText },
+    ]);
+
+    
+    setEnteredTaskText('');
+  }
 
   return (
     <SafeAreaView style={styles.appContainer}>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>My Todo List</Text>
 
+        {/* Input alanı */}
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
+            style={styles.textInput}
             placeholder="Add a new task..."
-            value={todoText}
-            onChangeText={setTodoText}
+            onChangeText={taskInputHandler}
+            value={enteredTaskText}
             returnKeyType="done"
           />
-          <Button title="Add" onPress={handleAddTodo} />
+          <Button title="Add" onPress={addTaskHandler} />
         </View>
 
-        
+        {/* Liste alanı */}
+        <View style={styles.listContainer}>
+          <FlatList
+            data={tasks}
+            renderItem={({ item }) => <TodoItem text={item.text} />}
+            keyExtractor={(item) => item.id}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No tasks yet. Add one!</Text>
+            }
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -40,7 +71,7 @@ export default function App() {
 const styles = StyleSheet.create({
   appContainer: {
     flex: 1,
-    backgroundColor: '#f0f2f5', 
+    backgroundColor: '#f0f2f5',
   },
   contentContainer: {
     flex: 1,
@@ -55,16 +86,30 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    gap: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    paddingBottom: 10,
   },
-  input: {
-    flex: 1,
+  textInput: {
+    flex: 1, 
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    padding: 10,
+    borderRadius: 6,
+    marginRight: 10,
+    fontSize: 16,
     backgroundColor: '#fff',
+  },
+  listContainer: {
+    flex: 5, 
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#888',
   },
 });
